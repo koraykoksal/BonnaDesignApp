@@ -5,9 +5,11 @@
 const express = require('express')
 const app = express()
 const cors = require('cors')
+const { dbConnection } = require('./src/configs/dbConnections') // db import
 
 //? dotenv
-require('dotenv')
+// .config() env dosyası içerisindeki değişlenleri process.env üzerinden erişilebilir hale getiriyor.
+require('dotenv').config()
 
 //? async error
 require('express-async-errors')
@@ -26,6 +28,10 @@ app.use(cors({
 }));
 
 
+// DB Connection function
+dbConnection()
+
+
 app.all('/', (req, res) => {
     res.status(200).send({
 
@@ -41,4 +47,4 @@ app.all('/', (req, res) => {
 app.use(require('./src/middlewares/errorHandler'))
 
 const PORT = process.env.PORT || 8000
-app.listen(PORT, () => console.log('server running via port ', PORT))
+app.listen(PORT, () => console.log(`server running via port ${PORT}`))
