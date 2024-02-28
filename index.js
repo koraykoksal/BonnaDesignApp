@@ -32,6 +32,10 @@ app.use(cors({
 dbConnection()
 
 
+// FIND AND SEARCH
+app.use(require('./src/middlewares/findSearchSortPage'))
+
+
 app.all('/', (req, res) => {
     res.status(200).send({
 
@@ -41,6 +45,10 @@ app.all('/', (req, res) => {
         }
     })
 })
+
+
+// user işlemleri için API adresi
+app.use('/api/users',require('./src/routes/user'))
 
 
 //* ERROR HANDLER

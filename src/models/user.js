@@ -22,17 +22,21 @@ const UserSchema = new mongosee.Schema({
         trim: true,
         require: [true, 'Email field must be required'],
         unique: [true, 'There is this email. Email field must be unique'],
-        validate: [
-            (email) => {
-                const emailRegexCheck = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-                return emailRegexCheck.test(email)
-            }, 'Email type is incorrect'
-        ]
+        match:[/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Incorrect email address !'],
+        //! yukarıdaki match işlemi aşağıdaki validate işleminin aynısını yapıyor
+        // validate: [
+        //     (email) => {
+        //         const emailRegexCheck = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+        //         return emailRegexCheck.test(email)
+        //     }, 'Email type is incorrect'
+        // ]
     },
     password: {
         type: String,
         require: true,
         trim: true,
+        minlength:6,
+        maxlength:10,
         set:(password)=>passwordEncrpy(password)
     },
     isAdmin:{
@@ -43,7 +47,7 @@ const UserSchema = new mongosee.Schema({
         type:Boolean,
         default:false
     }
-},{collation:'users',timeseries:true})
+},{collection:'users',timeseries:true})
 
 
 

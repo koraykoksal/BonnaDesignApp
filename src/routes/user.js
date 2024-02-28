@@ -8,7 +8,7 @@ const user = require('../controllers/user')
 
 // ana dizin talebinde controllerdan read ve create işlemlerini çalıştır
 router.route('/')
-.get(user.read)
+.get(user.list)
 .post(user.create)
 
 
