@@ -8,15 +8,15 @@ const permission = require('../middlewares/permissions')
 
 // ana dizin talebinde controllerdan read ve create işlemlerini çalıştır
 router.route('/')
-    .get(User.list)
-    .post(User.create)
+    .get(permission.isController,User.list)
+    .post(permission.isController,User.create)
 
 
 router.route('/:id')
-    .get(User.read)
-    .put(User.update)
-    .patch(User.update)
-    .delete(User.delete)
+    .get(permission.isController,User.read)
+    .put(permission.isController,User.update)
+    .patch(permission.isController,User.update)
+    .delete(permission.isController,User.delete)
 
 module.exports = router
 

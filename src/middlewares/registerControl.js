@@ -93,17 +93,17 @@ module.exports = async (req, res, next) => {
             }
         }
     }
-    // else if ((method == 'PUT' || method == 'PATCH') && password) {
+    else if ((method == 'PUT' || method == 'PATCH') && password && id) {
 
-    //     transporter.sendMail(mailOptions).then(response => {
-    //         console.log('Email sent:', response);
-    //         next();
-    //     }).catch(err => {
-    //         console.error('Error sending email:', err);
-    //         next(); // Hata ile bir sonraki middleware'e geç
-    //     });
+        transporter.sendMail(mailOptions).then(response => {
+            console.log('Email sent:', response);
+            next();
+        }).catch(err => {
+            console.error('Error sending email:', err);
+            next(); // Hata ile bir sonraki middleware'e geç
+        });
 
-    // }
+    }
     else {
         next()
     }

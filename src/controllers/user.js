@@ -3,7 +3,8 @@
 
 // model de oluşturulan user çağırılır
 const User = require('../models/user')
-
+const Token = require('../models/token');
+const passwordEnctypt = require('../helper/passwordEnctypt');
 
 module.exports = {
 
@@ -12,9 +13,13 @@ module.exports = {
 
         const data = await User.create(req.body);
 
+        const tokenKey = passwordEnctypt(data._id + Date.now())
+        const tokenData = await Token.create({ userId: data._id, token: tokenKey })
+
         // Kullanıcı başarıyla oluşturuldu, 201 durum kodu ile yanıt ver
         return res.status(201).send({
             error: false,
+            token: tokenData.token,
             data
         });
 
@@ -56,7 +61,8 @@ module.exports = {
     delete: async (req, res) => {
 
         const data = await User.deleteOne({ _id: req.params.id })
-        res.status(data.deletedCount ? 204 : 404).send({
+        const tokenData = await Token.deleteOne({ userId: req.params.id })
+        res.status(data.deletedCount && tokenData.deletedCount ? 204 : 404).send({
             error: !data.deletedCount,
             data,
             result: "Deleted"

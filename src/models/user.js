@@ -10,17 +10,17 @@ const UserSchema = new mongoose.Schema({
     name: {
         type: String,
         trim: true,
-        require: true,
+        required: true,
     },
     surname: {
         type: String,
         trim: true,
-        require: true
+        required: true
     },
     email: {
         type: String,
         trim: true,
-        require: [true, 'Email field must be required'],
+        required: [true, 'Email field must be required'],
         unique: [true, 'There is this email. Email field must be unique'],
         match:[/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Incorrect email address !'],
         //! yukarıdaki match işlemi aşağıdaki validate işleminin aynısını yapıyor
@@ -33,7 +33,7 @@ const UserSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        require: true,
+        required: true,
         trim: true,
         set:(password)=>passwordEncrpy(password)
     },
