@@ -3,20 +3,20 @@
 // express den Router fonksiyonu çağırılır
 const router = require('express').Router()
 // controller dan user çağırılır
-const user = require('../controllers/user')
-
+const User = require('../controllers/user')
+const permission = require('../middlewares/permissions')
 
 // ana dizin talebinde controllerdan read ve create işlemlerini çalıştır
 router.route('/')
-.get(user.list)
-.post(user.create)
+    .get(User.list)
+    .post(User.create)
 
 
 router.route('/:id')
-.get(user.read)
-.put(user.update)
-.patch(user.update)
-.delete(user.delete)
+    .get(User.read)
+    .put(User.update)
+    .patch(User.update)
+    .delete(User.delete)
 
 module.exports = router
 

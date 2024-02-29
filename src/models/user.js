@@ -1,11 +1,11 @@
 "use strict"
 
-const mongosee = require('mongoose')
+const {mongoose} = require('../configs/dbConnections')
 const passwordEncrpy = require('../helper/passwordEnctypt')
 
 // kullanıcı kaydı için önce şema bilgisi oluşturulur
 
-const UserSchema = new mongosee.Schema({
+const UserSchema = new mongoose.Schema({
 
     name: {
         type: String,
@@ -35,8 +35,6 @@ const UserSchema = new mongosee.Schema({
         type: String,
         require: true,
         trim: true,
-        minlength:6,
-        maxlength:10,
         set:(password)=>passwordEncrpy(password)
     },
     isAdmin:{
@@ -46,9 +44,13 @@ const UserSchema = new mongosee.Schema({
     isController:{
         type:Boolean,
         default:false
+    },
+    isActive:{
+        type:Boolean,
+        default:true
     }
 },{collection:'users',timeseries:true})
 
 
 
-module.exports = mongosee.model('User',UserSchema)
+module.exports = mongoose.model('User',UserSchema)
