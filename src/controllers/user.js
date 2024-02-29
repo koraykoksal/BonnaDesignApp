@@ -56,7 +56,6 @@ module.exports = {
             newData: await User.findOne({ _id: req.params.id })
         })
 
-
     },
     delete: async (req, res) => {
 
