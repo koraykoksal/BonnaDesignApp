@@ -9,7 +9,7 @@ const permission = require('../middlewares/permissions')
 
 // ana dizin talebinde controllerdan read ve create işlemlerini çalıştır
 router.route('/')
-    .get(User.list)
+    .get(permission.isLogin,User.list)
     .post(User.create)
 
 
