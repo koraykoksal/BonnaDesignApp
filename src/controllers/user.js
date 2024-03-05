@@ -5,7 +5,7 @@
 const User = require('../models/user')
 const Token = require('../models/token');
 const passwordEnctypt = require('../helper/passwordEnctypt');
-const cntt = require('../helper/kontrol')
+const usrMail = require('../helper/registerControl')
 
 
 module.exports = {
@@ -40,7 +40,7 @@ module.exports = {
                     error: false,
                     token: tokenData.token,
                     data,
-                    mail: await cntt(req, 'registerSendMail')  //mail fonksiyon çalıştır
+                    mail: await usrMail(req, 'registerSendMail')  //mail fonksiyon çalıştır
                 });
 
             }
@@ -50,7 +50,6 @@ module.exports = {
                     'Password must be between 6 and 10 characters !'
                 )
             }
-
 
         }
 
@@ -94,7 +93,7 @@ module.exports = {
                 error: false,
                 data,
                 newData: await User.findOne({ _id: req.params.id }),
-                mail: await cntt(req, 'updateSendMail')  //mail fonksiyon çalıştır
+                mail: await usrMail(req, 'updateSendMail')  //mail fonksiyon çalıştır
             })
 
         }

@@ -3,7 +3,7 @@
 
 const nodemailer = require('nodemailer');
 const User = require('../models/user')
-const passEncry = require('../helper/passwordEnctypt')
+const passEncry = require('./passwordEnctypt')
 const bcrypt = require('bcrypt')
 
 const transporter = nodemailer.createTransport({
@@ -31,51 +31,41 @@ module.exports = async function (req, status) {
         // `bcrypt.compare` fonksiyonu ile şifreyi karşılaştır
         const isMatch = await bcrypt.compare(password, userData.password);
 
-        if (password.length >= 6 && password.length <= 10) {
-            if (!isMatch) {
-                // userData'dan alınan bilgiler ile userInfo objesini güncelle
-                // userInfo = {
-                //     name: userData.name,
-                //     surname: userData.surname,
-                //     email: userData.email, // Varsayılan olarak userData'dan email kullanılıyor
-                // };
+        if (!isMatch) {
 
-                // mailOption oluşturulurken userInfo'dan alınan bilgileri kullan
-                const mailOption = {
-                    from: {
-                        name: 'Bonna Design Search App',
-                        address: process.env.MAIL_FROM,
-                    },
-                    to: userData.email, // Alıcı adresi olarak userData'dan alınan email'i kullan
-                    subject: 'About User Account Update',
-                    text: `
-                    Dear Sir or Madam,
+            // mailOption oluşturulurken userInfo'dan alınan bilgileri kullan
+            const mailOption = {
+                from: {
+                    name: 'Bonna Design Search App',
+                    address: process.env.MAIL_FROM,
+                },
+                to: userData.email, // Alıcı adresi olarak userData'dan alınan email'i kullan
+                subject: 'About User Account Update',
+                text: `
+                Dear Sir or Madam,
 
-                    Your account has been updated. Please check the information below.
+                Your account has been updated. Please check the information below.
 
-                    Update Information:
-                    - Name: ${userData.name}
-                    - Surname: ${userData.surname}
-                    - Email: ${userData.email}
-                    - New Password: ${password}
-                    - Updated Date: ${new Date()}
+                Update Information:
+                - Name: ${userData.name}
+                - Surname: ${userData.surname}
+                - Email: ${userData.email}
+                - New Password: ${password}
+                - Updated Date: ${new Date()}
 
-                    Don't share this information with other people please!
+                Don't share this information with other people please!
 
-                    BONNA DIGITAL TEAM
-                `
-                };
+                BONNA SOFTWARE TEAM
+            `
+            };
 
-                transporter.sendMail(mailOption)
-                    .then(response => {
-                        console.log('Email sent:', response);
-                    })
-                    .catch(err => {
-                        console.error('Error sending email:', err);
-                    });
-            }
-        } else {
-            throw new Error('Password must be between 6 and 10 characters !');
+            transporter.sendMail(mailOption)
+                .then(response => {
+                    console.log('Email sent:', response);
+                })
+                .catch(err => {
+                    console.error('Error sending email:', err);
+                });
         }
 
     }
@@ -104,7 +94,7 @@ module.exports = async function (req, status) {
 
             Don't share this information with other people please!
 
-            BONNA DIGITAL TEAM
+            BONNA SOFTWARE TEAM
         `
         };
 

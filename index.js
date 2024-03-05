@@ -37,8 +37,7 @@ app.use(require('./src/middlewares/authentication'))
 // FIND AND SEARCH
 app.use(require('./src/middlewares/findSearchSortPage'))
 
-// KULLANICI KAYIT İŞLEMİ OLACAĞI ZAMAN EMAIL-PASSWORD KONTROL YAP VE MAIL GONDER
-// app.use(require('./src/middlewares/registerControl'))
+
 
 
 

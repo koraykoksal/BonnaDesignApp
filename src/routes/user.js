@@ -5,7 +5,6 @@ const router = require('express').Router()
 // controller dan user çağırılır
 const User = require('../controllers/user')
 const permission = require('../middlewares/permissions')
-const test = require('../middlewares/test')
 
 
 // ana dizin talebinde controllerdan read ve create işlemlerini çalıştır
