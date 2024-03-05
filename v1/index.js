@@ -24,7 +24,7 @@ app.use(cors())
 
 // veya belirli bir kökene izin vermek için
 app.use(cors({
-    origin: ['http://localhost:3000', 'https://bonna-touch.vercel.app']
+    origin: ['http://localhost:3000', 'https://bonna-design-appservices.vercel.app/']
 }));
 
 
