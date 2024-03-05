@@ -5,23 +5,54 @@
 const User = require('../models/user')
 const Token = require('../models/token');
 const passwordEnctypt = require('../helper/passwordEnctypt');
+const cntt = require('../helper/kontrol')
+
 
 module.exports = {
 
     // user oluşturmak için kullanılacak controller
     create: async (req, res) => {
 
-        const data = await User.create(req.body);
+        const method = req.method
+        const id = req.params?.id
+        const { name, surname, email, password } = req.body
 
-        const tokenKey = passwordEnctypt(data._id + Date.now())
-        const tokenData = await Token.create({ userId: data._id, token: tokenKey })
+        // req.body den gelen email bilgisini alarak kayıtlı kullanıcı var mı kontrol et
+        const existingUser = await User.findOne({ email: email })
 
-        // Kullanıcı başarıyla oluşturuldu, 201 durum kodu ile yanıt ver
-        return res.status(201).send({
-            error: false,
-            token: tokenData.token,
-            data
-        });
+        if (existingUser) {
+
+            res.errorStatusCode = 400
+            throw new Error(
+                'There is already this email address !'
+            )
+        }
+        else {
+
+            if (password.length >= 6 && password.length <= 10) {
+
+                const data = await User.create(req.body);
+                const tokenKey = passwordEnctypt(data._id + Date.now())
+                const tokenData = await Token.create({ userId: data._id, token: tokenKey })
+
+                // Kullanıcı başarıyla oluşturuldu, 201 durum kodu ile yanıt ver
+                return res.status(201).send({
+                    error: false,
+                    token: tokenData.token,
+                    data,
+                    mail: await cntt(req, 'registerSendMail')  //mail fonksiyon çalıştır
+                });
+
+            }
+            else {
+                res.errorStatusCode = 400
+                throw new Error(
+                    'Password must be between 6 and 10 characters !'
+                )
+            }
+
+
+        }
 
     },
     list: async (req, res) => {
@@ -38,23 +69,35 @@ module.exports = {
     read: async (req, res) => {
 
         const data = await User.findOne({ _id: req.params.id })
+        const tokenData = await Token.findOne({ userId: req.params.id })
         // read işlemlerinde 200 bilgisi döner
         res.status(200).send({
             error: false,
-            data
+            data,
+            tokenData: tokenData
         })
     },
     update: async (req, res) => {
 
         // { runValidators: true } seçeneği, bir belgeyi güncellerken Mongoose şema validatörlerinin çalıştırılmasını sağlar. 
 
-        const data = await User.updateOne({ _id: req.params.id }, req.body, { runValidators: true })
-        // update işlemlerinde 202 bilgisi döner
-        res.status(202).send({
-            error: false,
-            data,
-            newData: await User.findOne({ _id: req.params.id })
-        })
+        const method = req.method
+        const id = req.params?.id
+        const { name, surname, email, password } = req.body
+
+        if (password.length >= 6 && password.length <= 10) {
+
+            const data = await User.updateOne({ _id: req.params.id }, req.body, { runValidators: true })
+
+            // update işlemlerinde 202 bilgisi döner
+            res.status(202).send({
+                error: false,
+                data,
+                newData: await User.findOne({ _id: req.params.id }),
+                mail: await cntt(req, 'updateSendMail')  //mail fonksiyon çalıştır
+            })
+
+        }
 
     },
     delete: async (req, res) => {

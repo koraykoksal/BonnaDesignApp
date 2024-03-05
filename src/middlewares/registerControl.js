@@ -3,6 +3,8 @@
 
 const nodemailer = require('nodemailer');
 const User = require('../models/user')
+const passEncry = require('../helper/passwordEnctypt')
+
 
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
@@ -15,54 +17,62 @@ const transporter = nodemailer.createTransport({
 module.exports = async (req, res, next) => {
 
     const method = req.method
-    const id = req.params.id
+    const id = req.params?.id
     const { name, surname, email, password } = req.body
 
 
-    const mailOptions = {
+    const registerForUsers = {
         from: {
             name: 'Bonna Design Search App',
             address: process.env.MAIL_FROM,
         },
-        to: email,
-        subject: id ? 'About User Information Update ' : 'About Register Information',
-        text: id ?
-            `
-            Dear Sir or Madam,
+        to: `${email}`,
+        subject: 'About New Register Information',
+        text: `
+        Dear Sir or Madam,
 
-            Updated your account. Please check below information.
+        Thank you for register our application.
 
-            Register Information:
-            - Name: ${name}
-            - Surname: ${surname}
-            - Email: ${email}
-            - New Password: ${password}
-            - Updated Date: ${new Date()}
+        Register Information:
+        - Name: ${name}
+        - Surname: ${surname}
+        - Email: ${email}
+        - Password: ${password}
+        - Created Date: ${new Date()}
 
-            Don't share information with other people please !
+        Don't share this information with other people please!
 
-            BONNA
-
-            
+        BONNA
         `
-            :
-            `
-            Dear Sir or Madam,
+    }
 
-            Thank you for register application.
 
-            Register Information:
-            - Name: ${name}
-            - Surname: ${surname}
-            - Email: ${email}
-            - Password: ${password}
-            - Created Date: ${new Date()}
+    const updateForUsers = {
+        from: {
+            name: 'Bonna Design Search App',
+            address: process.env.MAIL_FROM,
+        },
+        to: `${email}`,
+        subject: 'About User Information Update',
+        text: `
+        Dear Sir or Madam,
 
-            Don't share information with other people please !
+        Your account has been updated. Please check the information below.
 
-            BONNA
+        Register Information:
+        - Name: ${name}
+        - Surname: ${surname}
+        - Email: ${email}
+        - New Password: ${password}
+        - Updated Date: ${new Date()}
+
+        Don't share this information with other people please!
+
+        BONNA
         `
-    };
+    }
+
+
 
 
     if (method == 'POST' && name && surname && email && password) {
@@ -79,7 +89,7 @@ module.exports = async (req, res, next) => {
 
             if (password.length >= 6 && password.length <= 10) {
 
-                transporter.sendMail(mailOptions).then(response => {
+                transporter.sendMail(registerForUsers).then(response => {
                     console.log('Email sent:', response);
                     next();
                 }).catch(err => {
@@ -93,16 +103,18 @@ module.exports = async (req, res, next) => {
             }
         }
     }
-    else if ((method == 'PUT' || method == 'PATCH') && password && id) {
+    else if ((method == 'PUT' || method == 'PATCH') && password) {
 
-        transporter.sendMail(mailOptions).then(response => {
-            console.log('Email sent:', response);
-            next();
-        }).catch(err => {
-            console.error('Error sending email:', err);
-            next(); // Hata ile bir sonraki middleware'e geç
-        });
+        if (password !== passEncry(password)) {
 
+            transporter.sendMail(updateForUsers).then(response => {
+                console.log('Email sent:', response);
+                next();
+            }).catch(err => {
+                console.error('Error sending email:', err);
+                next(); // Hata ile bir sonraki middleware'e geç
+            });
+        }
     }
     else {
         next()

@@ -38,7 +38,7 @@ app.use(require('./src/middlewares/authentication'))
 app.use(require('./src/middlewares/findSearchSortPage'))
 
 // KULLANICI KAYIT İŞLEMİ OLACAĞI ZAMAN EMAIL-PASSWORD KONTROL YAP VE MAIL GONDER
-app.use(require('./src/middlewares/registerControl'))
+// app.use(require('./src/middlewares/registerControl'))
 
 
 
@@ -57,6 +57,7 @@ app.all('/', (req, res) => {
 // user işlemleri için API adresi
 app.use('/api/users',require('./src/routes/user'))
 app.use('/api/auth',require('./src/routes/auth'))
+app.use('/api/tokens',require('./src/routes/token'))
 
 
 
