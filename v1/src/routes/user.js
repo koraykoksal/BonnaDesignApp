@@ -14,10 +14,10 @@ router.route('/')
 
 
 router.route('/:id')
-    .get(User.read)
-    .put(User.update)
-    .patch(User.update)
-    .delete(User.delete)
+    .get(permission.isController,User.read)
+    .put(permission.isController,User.update)
+    .patch(permission.isController,User.update)
+    .delete(permission.isController,User.delete)
 
 
 module.exports = router
