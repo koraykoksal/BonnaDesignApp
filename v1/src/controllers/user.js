@@ -38,7 +38,7 @@ module.exports = {
                 // Kullanıcı başarıyla oluşturuldu, 201 durum kodu ile yanıt ver
                 return res.status(201).send({
                     error: false,
-                    token: tokenData.token,
+                    token:tokenData.token,
                     data,
                     mail: await usrMail(req, 'registerSendMail')  //mail fonksiyon çalıştır
                 });

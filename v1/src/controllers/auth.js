@@ -17,13 +17,14 @@ module.exports = {
             // const user = await User.findOne({ $or: [{ username }, { email }]})
 
             const user = await User.findOne({ email: email })
-            
+
             if (user && user.password == passwordEnctypt(password)) {
 
                 if (user.isActive) {
 
-                    
-                    let tokenData = await User.findOne({ userId: user._id })
+                    // kullanıcı id si ile Token model den bilgileri çek
+                    // token model den veri gelmezse yeni bir token id oluştur
+                    let tokenData = await Token.findOne({ userId: user._id })
 
                     if (!tokenData) {
 
