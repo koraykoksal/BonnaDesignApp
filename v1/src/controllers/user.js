@@ -38,7 +38,7 @@ module.exports = {
                 // Kullanıcı başarıyla oluşturuldu, 201 durum kodu ile yanıt ver
                 return res.status(201).send({
                     error: false,
-                    token:tokenData.token,
+                    token: tokenData.token,
                     data,
                     mail: await usrMail(req, 'registerSendMail')  //mail fonksiyon çalıştır
                 });
@@ -84,18 +84,34 @@ module.exports = {
         const id = req.params?.id
         const { name, surname, email, password } = req.body
 
-        if (password.length >= 6 && password.length <= 10) {
-
-            const data = await User.updateOne({ _id: req.params.id }, req.body, { runValidators: true })
+        if (password !== undefined && password.length >= 6 && password.length <= 10) {
+            const data = await User.updateOne({ _id: id }, req.body, { runValidators: true });
 
             // update işlemlerinde 202 bilgisi döner
             res.status(202).send({
                 error: false,
                 data,
-                newData: await User.findOne({ _id: req.params.id }),
+                newData: await User.findOne({ _id: id }),
                 mail: await usrMail(req, 'updateSendMail')  //mail fonksiyon çalıştır
-            })
+            });
+        }
+        else if (password === undefined || (password.length >= 6 && password.length <= 10)) {
+            const data = await User.updateOne({ _id: id }, req.body, { runValidators: true });
 
+            // Eğer password undefined ise veya uzunluk koşullarını sağlıyorsa, mail gönderme işlemi yapılmaz
+            // update işlemlerinde 202 bilgisi döner
+            res.status(202).send({
+                error: false,
+                data,
+                newData: await User.findOne({ _id: id }),
+            });
+        }
+        else {
+            // password koşulları sağlanmadığında bir hata mesajı döndür
+            res.status(400).send({
+                error: true,
+                message: "Password must be between 6 to 10 characters long",
+            });
         }
 
     },
