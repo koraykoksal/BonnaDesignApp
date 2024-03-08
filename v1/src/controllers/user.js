@@ -56,8 +56,8 @@ module.exports = {
     },
     list: async (req, res) => {
 
-        const data = await res.getModelList(User)
-
+        const result = await res.getModelList(User)
+        const data = result.filter(item => item.name !== 'root')
         res.status(200).send({
             error: false,
             // details: await res.getModelListDetails(User),
